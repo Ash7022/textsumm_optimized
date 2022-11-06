@@ -17,7 +17,7 @@ import math
 def clean_text(file_name):
     file = open(file_name, "r",encoding="utf8")
     filedata = file.readlines()
-    article = filedata[0].split(". ")
+    article = filedata[0].split(".")
     sentences = []
     # removing special characters and extra whitespaces
     for sentence in article:
@@ -114,13 +114,19 @@ def calculateSentSimilarity(sentences,tfidf,n):
       numerator,deno1,deno2 = 0,0,0
 
       for word in st:
-        numerator = numerator + tfidf[index1].get(word,0)*tfidf[index2].get(word,0)
-        deno1     = deno1     + tfidf[index1].get(word,0)*tfidf[index1].get(word,0)
-        deno2     = deno2     + tfidf[index2].get(word,0)*tfidf[index2].get(word,0)
+        v1=(tfidf[index1].get(word,0))
+        v2=(tfidf[index2].get(word,0))
+        if v1!=0 and v2!=0:
+            numerator = numerator + tfidf[index1].get(word,0)*tfidf[index2].get(word,0)
+        if v1!=0:
+            deno1     = deno1     + tfidf[index1].get(word,0)*tfidf[index1].get(word,0)
+        if v2!=0:
+            deno2     = deno2     + tfidf[index2].get(word,0)*tfidf[index2].get(word,0)
+        score =0
+        if(deno1 !=0 and deno2!=0):
+            score = numerator / (math.sqrt(deno1*deno2))
 
-      score = numerator / (math.sqrt(deno1*deno2))
-
-      matrix[index1][index2] = score
+        matrix[index1][index2] = score
 
   return matrix
 
